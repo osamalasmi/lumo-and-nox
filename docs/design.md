@@ -163,7 +163,7 @@ We werken met 3 sprints van 1 week, met aan het eind van elke week een korte rev
 | Wie | Code | Level |
 | --- | --- | --- |
 | Osama | Player, SwapManager, HUD | Level 2 |
-| Broer | Puzzel-onderdelen, menu's, LevelManager | Level 1 |
+| Ahmad | Puzzel-onderdelen, menu's, LevelManager | Level 1 |
 
 | Week | Wat |
 | --- | --- |
