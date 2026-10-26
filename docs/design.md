@@ -16,15 +16,15 @@ We kiezen Unwanted powers omdat de spelers hun vorm niet zelf kiezen. De wissel 
 
 Zo werkt de wissel:
 
-- Elke 20 seconden wisselen Lumo en Nox van vorm (licht wordt schaduw, schaduw wordt licht).
+- Na elke ronde wisselen Lumo en Nox van vorm (licht wordt schaduw, schaduw wordt licht).
+- In level 1 duurt een ronde 30 seconden, in level 2 20 seconden. Zo wordt het langzaam moeilijker.
 - 3 seconden voor de wissel knippert het scherm en hoor je een piep. Zo kun je nog op tijd een veilige plek zoeken.
 - Na de wissel horen ook de krachten bij de nieuwe vorm.
-- In level 1 duurt een ronde 30 seconden, in level 2 20 seconden. Zo wordt het langzaam moeilijker.
 - De timer loopt altijd door, ook als een speler stilstaat.
 
 ## Personages
 
-De speler houdt zijn figuur, maar de vorm (licht of schaduw) wisselt. De kracht en de zwakte horen bij de vorm, niet bij de figuur.
+De speler houdt zijn figuur, maar de vorm (licht of schaduw) wisselt. De kracht en de zwakte horen bij de vorm. Daarnaast heeft elke figuur één eigen kracht die altijd blijft.
 
 |  | Lumo | Nox |
 | --- | --- | --- |
@@ -34,8 +34,7 @@ De speler houdt zijn figuur, maar de vorm (licht of schaduw) wisselt. De kracht 
 | Kracht in schaduw-vorm | Schaduwstap: loopt door schaduwmuren heen | Zelfde kracht |
 | Zwakte licht-vorm | Gaat dood in donkere poelen | Zelfde zwakte |
 | Zwakte schaduw-vorm | Gaat dood in lichtstralen | Zelfde zwakte |
-
-Open vraag: willen we dat elke figuur ook iets eigens heeft? Bijvoorbeeld Lumo springt hoger en Nox kan kisten duwen.
+| Eigen kracht (altijd) | Springt hoger | Kan kisten duwen |
 
 ## Besturing
 
@@ -74,7 +73,7 @@ De puzzels draaien om licht en schaduw slim aan en uit zetten, op het goede mome
 | Lichtplatform | Alleen zichtbaar met Gloed | – |
 | Schaduwmuur | Alleen door te lopen met Schaduwstap | – |
 | Bewegend platform | Gaat heen en weer of op en neer | – |
-| Kist | Te duwen, blokkeert een lichtstraal en maakt zo schaduw | – |
+| Kist | Alleen Nox kan hem duwen. Blokkeert een lichtstraal en maakt zo schaduw | – |
 
 ## Failstate en checkpoints
 
@@ -133,28 +132,28 @@ We maken 2 levels. Elk level wordt door één persoon gebouwd.
 
 ## Techniek, assets en klassen
 
-Voorstel: **Godot 4** met GDScript. Het is gratis, goed voor 2D en makkelijk te leren. Open vraag: kennen we Unity al beter? Dan kiezen we dat.
+We gebruiken **Unity** (Universal 2D) met **C#**. We kiezen Unity omdat daar veel meer hulp en tutorials voor te vinden zijn. Dat helpt ons als we vastlopen in de 3 weken.
 
 - **Assets:** Kenney.nl (Pixel Platformer en geluiden), aangepast naar donkere kleuren.
 - **Versiebeheer:** GitHub, met een main-branch en per taak een eigen branch. Mergen via een pull request die de ander bekijkt.
 
-Belangrijkste klassen (basis voor het klassendiagram):
+Belangrijkste klassen (basis voor het klassendiagram). Bijna alle klassen zijn een `MonoBehaviour` die we op een GameObject zetten. Elke klasse staat in een eigen C#-bestand in `Assets/Scripts/`.
 
-| Klasse | Taak |
-| --- | --- |
-| Player | Lopen, springen, vorm, kracht gebruiken, doodgaan |
-| SwapManager | Timer, waarschuwing, vorm van beide spelers wisselen |
-| LightZone / DarkZone | Checken of een speler in de verkeerde vorm erin staat |
-| Lamp | Lichtstraal aan/uit, eventueel bewegen |
-| Lever / PressButton | Iets aan- of uitzetten als er iemand gebruik van maakt |
-| Door | Open/dicht door een Lever of PressButton |
-| MovingPlatform | Heen en weer bewegen |
-| PushBox | Te duwen, blokkeert licht |
-| Checkpoint | Laatste veilige plek opslaan |
-| Crystal | Op te pakken, telt mee voor de score |
-| LevelManager | Respawn, deaths, tijd, level klaar |
-| GameManager | Scenes laden, voortgang opslaan |
-| HUD / Menu | Schermen tonen |
+| Klasse | Type | Taak |
+| --- | --- | --- |
+| Player | MonoBehaviour | Lopen, springen, vorm, kracht gebruiken, doodgaan |
+| SwapManager | MonoBehaviour | Timer, waarschuwing, vorm van beide spelers wisselen |
+| LightZone / DarkZone | MonoBehaviour (trigger-collider) | Checken of een speler in de verkeerde vorm erin staat |
+| Lamp | MonoBehaviour | Lichtstraal aan/uit, eventueel bewegen |
+| Lever / PressButton | MonoBehaviour | Iets aan- of uitzetten als er iemand gebruik van maakt |
+| Door | MonoBehaviour | Open/dicht door een Lever of PressButton |
+| MovingPlatform | MonoBehaviour | Heen en weer bewegen |
+| PushBox | MonoBehaviour (met Rigidbody2D) | Alleen Nox kan hem duwen, blokkeert licht |
+| Checkpoint | MonoBehaviour | Laatste veilige plek opslaan |
+| Crystal | MonoBehaviour | Op te pakken, telt mee voor de score |
+| LevelManager | MonoBehaviour | Respawn, deaths, tijd, level klaar |
+| GameManager | MonoBehaviour (blijft bestaan tussen scenes) | Scenes laden, voortgang opslaan |
+| HUD / Menu | MonoBehaviour (UI) | Schermen tonen |
 
 ## Taakverdeling en planning
 
