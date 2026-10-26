@@ -1,0 +1,213 @@
+@startuml klassendiagram
+title Lumo & Nox - Klassendiagram
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+enum Shape {
+  Light
+  Shadow
+}
+
+class Player <<MonoBehaviour>> {
+  ' Lumo en Nox zijn twee instanties met andere instellingen
+  - jumpForce : float
+  - canPushBoxes : bool
+  - moveSpeed : float
+  - shape : Shape
+  - isGrounded : bool
+  - levelManager : LevelManager
+  + Move(direction : float) : void
+  + Jump() : void
+  + UseAbility() : void
+  + SetShape(newShape : Shape) : void
+  + Die() : void
+}
+
+class SwapManager <<MonoBehaviour>> {
+  - roundTime : float
+  - warningTime : float
+  - timeLeft : float
+  - players : Player[2]
+  + ResetTimer() : void
+  - Warn() : void
+  - Swap() : void
+}
+
+abstract class Zone <<MonoBehaviour>> {
+  + {abstract} IsDangerousFor(player : Player) : bool
+  # OnTriggerStay2D(other : Collider2D) : void
+}
+
+class LightZone <<MonoBehaviour>> {
+  + IsDangerousFor(player : Player) : bool
+}
+
+class DarkZone <<MonoBehaviour>> {
+  + IsDangerousFor(player : Player) : bool
+}
+
+class HazardZone <<MonoBehaviour>> {
+  + IsDangerousFor(player : Player) : bool
+}
+
+abstract class Activatable <<MonoBehaviour>> {
+  + {abstract} Activate() : void
+  + {abstract} Deactivate() : void
+}
+
+class Lamp <<MonoBehaviour>> {
+  - isOn : bool
+  - beam : LightZone
+  + Activate() : void
+  + Deactivate() : void
+}
+
+class Door <<MonoBehaviour>> {
+  - isOpen : bool
+  + Activate() : void
+  + Deactivate() : void
+}
+
+class MovingPlatform <<MonoBehaviour>> {
+  - pointA : Transform
+  - pointB : Transform
+  - speed : float
+  - isMoving : bool
+  + Activate() : void
+  + Deactivate() : void
+  - Move() : void
+}
+
+class Lever <<MonoBehaviour>> {
+  - isOn : bool
+  - target : Activatable
+  + Use() : void
+}
+
+class PressButton <<MonoBehaviour>> {
+  - isPressed : bool
+  - target : Activatable
+  # OnTriggerEnter2D(other : Collider2D) : void
+  # OnTriggerExit2D(other : Collider2D) : void
+}
+
+class LightPlatform <<MonoBehaviour>> {
+  - isRevealed : bool
+  + SetRevealed(revealed : bool) : void
+}
+
+class ShadowWall <<MonoBehaviour>> {
+  - isPassable : bool
+  + SetPassable(passable : bool) : void
+}
+
+class PushBox <<MonoBehaviour>> {
+  - body : Rigidbody2D
+  + Push(direction : Vector2) : void
+}
+
+class Checkpoint <<MonoBehaviour>> {
+  - isActive : bool
+  - levelManager : LevelManager
+  # OnTriggerEnter2D(other : Collider2D) : void
+}
+
+class Crystal <<MonoBehaviour>> {
+  - isCollected : bool
+  - levelManager : LevelManager
+  # OnTriggerEnter2D(other : Collider2D) : void
+}
+
+class ExitPortal <<MonoBehaviour>> {
+  - playersInside : int
+  - levelManager : LevelManager
+  # OnTriggerEnter2D(other : Collider2D) : void
+  # OnTriggerExit2D(other : Collider2D) : void
+}
+
+class LevelManager <<MonoBehaviour>> {
+  - players : Player[2]
+  - swapManager : SwapManager
+  - currentCheckpoint : Checkpoint
+  - deaths : int
+  - elapsedTime : float
+  - crystals : int
+  + OnPlayerDied() : void
+  + SetCheckpoint(checkpoint : Checkpoint) : void
+  + AddCrystal() : void
+  + FinishLevel() : void
+  - Respawn() : void
+}
+
+class GameManager <<MonoBehaviour>> {
+  + {static} Instance : GameManager
+  + LoadLevel(index : int) : void
+  + SaveProgress(result : LevelProgress) : void
+}
+
+class HUD <<MonoBehaviour>> {
+  - timerBar : Slider
+  - crystalText : TextMeshProUGUI
+  + UpdateTimer(timeLeft : float) : void
+  + UpdateShape(player : Player) : void
+}
+
+class PauseMenu <<MonoBehaviour>> {
+  + Show() : void
+  + Resume() : void
+  + Restart() : void
+  + GoToMainMenu() : void
+}
+
+class WinScreen <<MonoBehaviour>> {
+  - timeText : TextMeshProUGUI
+  - crystalText : TextMeshProUGUI
+  - deathText : TextMeshProUGUI
+  + Show(time : float, crystals : int, deaths : int) : void
+  + NextLevel() : void
+}
+
+class LevelProgress {
+  ' zie datamodel.puml
+}
+
+' Overerving
+Zone <|-- LightZone
+Zone <|-- DarkZone
+Zone <|-- HazardZone
+Activatable <|-- Lamp
+Activatable <|-- Door
+Activatable <|-- MovingPlatform
+
+' Player
+Player --> "1" Shape : shape
+Player --> "1" LevelManager : meldt dood
+Player ..> "0..*" PushBox : duwt
+Player ..> "0..*" LightPlatform : Gloed
+Player ..> "0..*" ShadowWall : Schaduwstap
+Zone ..> "0..*" Player : checkt
+
+' Wissel en level
+SwapManager --> "2" Player : players
+LevelManager --> "2" Player : players
+LevelManager --> "1" SwapManager
+LevelManager --> "0..1" Checkpoint : currentCheckpoint
+
+' Zij roepen LevelManager aan
+Checkpoint --> "1" LevelManager
+Crystal --> "1" LevelManager
+ExitPortal --> "1" LevelManager : FinishLevel()
+
+' Schakelaars sturen iets aan
+Lever "0..*" --> "1" Activatable : target
+PressButton "0..*" --> "1" Activatable : target
+Lamp *-- "1" LightZone : beam
+
+' UI
+HUD --> "1" SwapManager
+HUD --> "1" LevelManager
+LevelManager --> "1" WinScreen
+PauseMenu ..> "1" GameManager
+WinScreen ..> "1" GameManager
+GameManager ..> "0..*" LevelProgress : slaat op
+@enduml

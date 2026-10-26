@@ -1,0 +1,33 @@
+@startuml datamodel
+title Lumo & Nox - Datamodel
+allowmixing
+skinparam classAttributeIconSize 0
+
+artifact "save.json" as saveFile <<JSON>> {
+}
+
+note right of saveFile
+  Opgeslagen met JsonUtility.
+  Map: Application.persistentDataPath
+  Lokaal op de computer, offline.
+end note
+
+class SaveData {
+  + levels : LevelProgress[]
+}
+
+class LevelProgress {
+  + levelIndex : int
+  + completed : bool
+  + bestTime : float
+  + crystalsFound : int
+}
+
+note right of LevelProgress
+  bestTime in seconden (0 = nog niet gehaald)
+  crystalsFound: 0 t/m 3
+end note
+
+saveFile ..> SaveData : bevat
+SaveData *-- "2" LevelProgress
+@enduml
