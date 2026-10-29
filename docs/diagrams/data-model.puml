@@ -1,4 +1,4 @@
-@startuml datamodel
+@startuml data-model
 title Lumo & Nox - Datamodel
 allowmixing
 skinparam classAttributeIconSize 0

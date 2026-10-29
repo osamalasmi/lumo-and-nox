@@ -1,4 +1,4 @@
-@startuml klassendiagram
+@startuml class-diagram
 title Lumo & Nox - Klassendiagram
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
@@ -13,12 +13,11 @@ class Player <<MonoBehaviour>> {
   - jumpForce : float
   - canPushBoxes : bool
   - moveSpeed : float
-  - shape : Shape
   - isGrounded : bool
-  - levelManager : LevelManager
   + Move(direction : float) : void
   + Jump() : void
   + UseAbility() : void
+  + Interact() : void
   + SetShape(newShape : Shape) : void
   + Die() : void
 }
@@ -142,7 +141,14 @@ class LevelManager <<MonoBehaviour>> {
 class GameManager <<MonoBehaviour>> {
   + {static} Instance : GameManager
   + LoadLevel(index : int) : void
+  + LoadProgress() : void
   + SaveProgress(result : LevelProgress) : void
+}
+
+class MainMenu <<MonoBehaviour>> {
+  + Play() : void
+  + SelectLevel(index : int) : void
+  + Quit() : void
 }
 
 class HUD <<MonoBehaviour>> {
@@ -167,9 +173,12 @@ class WinScreen <<MonoBehaviour>> {
   + NextLevel() : void
 }
 
-class LevelProgress {
-  ' zie datamodel.puml
+class SaveData {
 }
+
+note right of SaveData
+  zie data-model.puml
+end note
 
 ' Overerving
 Zone <|-- LightZone
@@ -185,6 +194,7 @@ Player --> "1" LevelManager : meldt dood
 Player ..> "0..*" PushBox : duwt
 Player ..> "0..*" LightPlatform : Gloed
 Player ..> "0..*" ShadowWall : Schaduwstap
+Player ..> "0..*" Lever : Use()
 Zone ..> "0..*" Player : checkt
 
 ' Wissel en level
@@ -207,7 +217,8 @@ Lamp *-- "1" LightZone : beam
 HUD --> "1" SwapManager
 HUD --> "1" LevelManager
 LevelManager --> "1" WinScreen
+MainMenu ..> "1" GameManager
 PauseMenu ..> "1" GameManager
 WinScreen ..> "1" GameManager
-GameManager ..> "0..*" LevelProgress : slaat op
+GameManager --> "1" SaveData
 @enduml
