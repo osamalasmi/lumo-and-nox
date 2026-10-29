@@ -26,7 +26,6 @@ class SwapManager <<MonoBehaviour>> {
   - roundTime : float
   - warningTime : float
   - timeLeft : float
-  - players : Player[2]
   + ResetTimer() : void
   - Warn() : void
   - Swap() : void
@@ -56,7 +55,6 @@ abstract class Activatable <<MonoBehaviour>> {
 
 class Lamp <<MonoBehaviour>> {
   - isOn : bool
-  - beam : LightZone
   + Activate() : void
   + Deactivate() : void
 }
@@ -79,13 +77,11 @@ class MovingPlatform <<MonoBehaviour>> {
 
 class Lever <<MonoBehaviour>> {
   - isOn : bool
-  - target : Activatable
   + Use() : void
 }
 
 class PressButton <<MonoBehaviour>> {
   - isPressed : bool
-  - target : Activatable
   # OnTriggerEnter2D(other : Collider2D) : void
   # OnTriggerExit2D(other : Collider2D) : void
 }
@@ -107,27 +103,21 @@ class PushBox <<MonoBehaviour>> {
 
 class Checkpoint <<MonoBehaviour>> {
   - isActive : bool
-  - levelManager : LevelManager
   # OnTriggerEnter2D(other : Collider2D) : void
 }
 
 class Crystal <<MonoBehaviour>> {
   - isCollected : bool
-  - levelManager : LevelManager
   # OnTriggerEnter2D(other : Collider2D) : void
 }
 
 class ExitPortal <<MonoBehaviour>> {
   - playersInside : int
-  - levelManager : LevelManager
   # OnTriggerEnter2D(other : Collider2D) : void
   # OnTriggerExit2D(other : Collider2D) : void
 }
 
 class LevelManager <<MonoBehaviour>> {
-  - players : Player[2]
-  - swapManager : SwapManager
-  - currentCheckpoint : Checkpoint
   - deaths : int
   - elapsedTime : float
   - crystals : int
@@ -142,7 +132,7 @@ class GameManager <<MonoBehaviour>> {
   + {static} Instance : GameManager
   + LoadLevel(index : int) : void
   + LoadProgress() : void
-  + SaveProgress(result : LevelProgress) : void
+  + SaveProgress(levelIndex : int, time : float, crystals : int) : void
 }
 
 class MainMenu <<MonoBehaviour>> {
@@ -199,7 +189,7 @@ Zone ..> "0..*" Player : checkt
 
 ' Wissel en level
 SwapManager --> "2" Player : players
-LevelManager --> "2" Player : players
+LevelManager --> "2" Player
 LevelManager --> "1" SwapManager
 LevelManager --> "0..1" Checkpoint : currentCheckpoint
 
