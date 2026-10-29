@@ -23,7 +23,7 @@ Het volledige ontwerp staat in `docs/design.md`. Lees dat eerst als je iets over
 - Raak `Library/`, `Temp/`, `Logs/` en `UserSettings/` niet aan.
 - C#: PascalCase voor klassen en methodes, camelCase voor velden. Gebruik `[SerializeField] private` in plaats van `public` velden.
 - Houd scripts klein en simpel. Dit is een MVP van 3 weken, geen grote architectuur.
-- Als je een klasse toevoegt of verandert, werk dan ook `docs/klassendiagram.md` bij.
+- Als je een klasse toevoegt of verandert, werk dan ook `docs/class-diagram.md` bij.
 
 ## Documentatie
 
